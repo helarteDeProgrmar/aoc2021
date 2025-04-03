@@ -1,0 +1,15 @@
+#!/bin/bash
+
+log_name="automatice.sh |"
+
+echo "$log_name automatizando dia $1, año $2"
+
+mkdir -p "app/day$1"
+
+curl -X GET "https://adventofcode.com/$2/day/$1/input" -H "Cookie: session=<tu-cookie>" >"app/day$1/input"
+
+echo "$log_name curl: Escrito en input"
+cat app/day$1/input
+echo "$log_name curl: Escrito en input"
+echo "$log_name basic.txt: Escrito en Day$1.hs"
+cat basic.txt >"app/day$1/Day$1.hs"
