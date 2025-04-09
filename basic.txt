@@ -1,0 +1,25 @@
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
+use std::path::Path;
+
+fn main() -> io::Result<()> {
+    let mut result1 = 0;
+    let mut result2 = 0;
+
+    let content = read_input();
+
+    println!("Result 1: {}", result1);
+    println!("Result 2: {}", result2);
+    Ok(())
+}
+
+fn read_input() -> io::Result<Vec<i32>> {
+    let fd = File::open(Path::new("src/day1/input"))?;
+    let reader = BufReader::new(fd);
+
+    for line in reader.lines() {
+        let line = line?;
+        println!("{}", line);
+    }
+    Ok(Vec::new())
+}
