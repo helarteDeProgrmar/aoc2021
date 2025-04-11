@@ -7,39 +7,89 @@ fn main() -> io::Result<()> {
     let mut result2 = 0;
 
     let mut bingo = read_input()?;
-    let way = bingo.way.clone();
 
-    for num in way {
-        // Marca el número en cada matriz
-        bingo.matrix_set = bingo
-            .matrix_set
-            .into_iter()
-            .map(|matrix| {
-                matrix
-                    .into_iter()
-                    .map(|row| {
-                        row.into_iter()
-                            .map(|e| if e == num { -e } else { e })
-                            .collect()
-                    })
-                    .collect()
-            })
-            .collect();
+    for num in bingo.way {
+        println!("The current number is{}", num);
+        for matrix in &mut bingo.matrix_set {
+            for row in matrix {
+                for val in row {
+                    if *val == num {
+                        (*val) = -(*val);
+                        println!("{}", *val);
+                    }
+                }
+            }
+        }
 
-        for m in &bingo.matrix_set {
-            // check si hay fila ganadora
-            if m.iter().any(|row| row.iter().all(|e| *e < 0)) {
-                result1 = num
-                    * m.iter().fold(0, |acc, row| {
-                        acc + row.iter().filter(|e| **e >= 0).sum::<i32>()
-                    });
-                break;
+        for matrix in &bingo.matrix_set {
+            for row in matrix {
+                if row.iter().all(|val| *val < 0) {
+                    result1 = num * sum_all(matrix);
+                    break;
+                }
+            }
+            let num_columns = matrix[0].len();
+            for i in 0..num_columns {
+                if matrix.iter().all(|row| row[i] < 0) {
+                    result1 = num * sum_all(matrix);
+                    break;
+                }
             }
         }
 
         if result1 != 0 {
-            break; // salimos una vez tengamos el primer resultado
+            break;
         }
+    }
+
+    bingo = read_input()?;
+    for num in bingo.way {
+        println!("The current number is{}", num);
+        for matrix in &mut bingo.matrix_set {
+            for row in matrix {
+                for val in row {
+                    if *val == num {
+                        (*val) = -(*val);
+                        println!("{}", *val);
+                    }
+                }
+            }
+        }
+        if bingo.matrix_set.len() == 1 {
+            result2 = num * sum_all(&bingo.matrix_set[0]);
+            break;
+        }
+        //for (idx_matrix, matrix) in (&mut bingo.matrix_set).into_iter().enumerate() {
+        //    for row in matrix {
+        //        if row.iter().all(|val| *val < 0) {
+        //            bingo.matrix_set.remove(idx_matrix);
+        //            break;
+        //        }
+        //    }
+        //    let num_columns = matrix[0].len();
+        //    for i in 0..num_columns {
+        //        if matrix.iter().all(|row| row[i] < 0) {
+        //            bingo.matrix_set.remove(idx_matrix);
+        //            break;
+        //        }
+        //    }
+        //}
+        //bingo.matrix_set =
+        bingo.matrix_set.retain(|matrix| {
+            let row_has_all_neg = matrix.iter().any(|row| row.iter().all(|val| *val < 0));
+            if row_has_all_neg {
+                return false;
+            }
+
+            let num_columns = matrix[0].len();
+            for i in 0..num_columns {
+                if matrix.iter().all(|row| row[i] < 0) {
+                    return false;
+                }
+            }
+
+            true
+        });
     }
     println!("Result 1: {}", result1);
     println!("Result 2: {}", result2);
@@ -47,7 +97,7 @@ fn main() -> io::Result<()> {
 }
 
 fn read_input() -> io::Result<Bingo> {
-    let fd = File::open(Path::new("src/day1/input"))?;
+    let fd = File::open(Path::new("src/day4/input"))?;
     let reader = BufReader::new(fd);
     let mut lines = reader.lines();
 
@@ -81,6 +131,17 @@ fn read_input() -> io::Result<Bingo> {
     }
 
     Ok(Bingo { way, matrix_set })
+}
+fn sum_all(matrix: &Vec<Vec<i32>>) -> i32 {
+    let mut sum = 0;
+    for row in matrix {
+        for val in row {
+            if *val >= 0 {
+                sum += *val;
+            }
+        }
+    }
+    sum
 }
 struct Bingo {
     way: Vec<i32>,
