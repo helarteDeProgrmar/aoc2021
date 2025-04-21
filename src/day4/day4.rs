@@ -15,7 +15,6 @@ fn main() -> io::Result<()> {
                 for val in row {
                     if *val == num {
                         (*val) = -(*val);
-                        println!("{}", *val);
                     }
                 }
             }
@@ -50,31 +49,21 @@ fn main() -> io::Result<()> {
                 for val in row {
                     if *val == num {
                         (*val) = -(*val);
-                        println!("{}", *val);
                     }
                 }
             }
         }
+        println!("{}", bingo.matrix_set.len());
         if bingo.matrix_set.len() == 1 {
             result2 = num * sum_all(&bingo.matrix_set[0]);
+            for row in &bingo.matrix_set[0] {
+                for elem in row {
+                    print!("{} ", elem);
+                }
+                println!("");
+            } // with one iteration more: 56 * (32+38+45+70+86+66+60+84) 
             break;
         }
-        //for (idx_matrix, matrix) in (&mut bingo.matrix_set).into_iter().enumerate() {
-        //    for row in matrix {
-        //        if row.iter().all(|val| *val < 0) {
-        //            bingo.matrix_set.remove(idx_matrix);
-        //            break;
-        //        }
-        //    }
-        //    let num_columns = matrix[0].len();
-        //    for i in 0..num_columns {
-        //        if matrix.iter().all(|row| row[i] < 0) {
-        //            bingo.matrix_set.remove(idx_matrix);
-        //            break;
-        //        }
-        //    }
-        //}
-        //bingo.matrix_set =
         bingo.matrix_set.retain(|matrix| {
             let row_has_all_neg = matrix.iter().any(|row| row.iter().all(|val| *val < 0));
             if row_has_all_neg {
