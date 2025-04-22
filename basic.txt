@@ -6,7 +6,7 @@ fn main() -> io::Result<()> {
     let mut result1 = 0;
     let mut result2 = 0;
 
-    let content = read_input();
+    let content = read_input()?;
 
     println!("Result 1: {}", result1);
     println!("Result 2: {}", result2);
